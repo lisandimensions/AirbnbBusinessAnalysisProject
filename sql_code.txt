@@ -1,0 +1,30 @@
+-- report by borough
+select neighbourhood_group as borough,
+count(airbnbid) as listing_cnt,
+count(DISTINCT host_id) as host_cnt,
+avg(price) as avg_price,
+min(price) as min_price,
+max(price) as max_price,
+avg(reviews_per_month) as avg_reviews,
+min(reviews_per_month) as min_reviews,
+max(reviews_per_month) as max_reviews,
+avg(price)*avg(reviews_per_month) as avg_income,
+p.Y2020, p.y2030, (Y2030-Y2020)/cast(Y2020 as real) as increase_rate
+from NYCAirBNB a
+left join NYCPopulation p on a.neighbourhood_group = p.Neighbourhood
+where availability_365 > 0
+group by neighbourhood_group
+order by listing_cnt DESC, avg_price desc
+
+--report by roomtype
+select room_type,
+count(airbnbid) as listing_cnt,
+avg(price) as avg_price,
+avg(reviews_per_month) as avg_reviews,
+avg(price)*avg(reviews_per_month) as avg_income,
+avg(minimum_nights) as avg_min_nights,
+avg(availability_365) as avg_availability
+from NYCAirBNB a
+where availability_365 > 0
+group by room_type
+order by listing_cnt DESC, avg_price desc
